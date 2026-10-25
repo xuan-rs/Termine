@@ -1,10 +1,5 @@
 import sys
 import os
-# 拿 ~
-home = os.path.expanduser("~") 
-
-# 拿 Roaming (只在 Windows 有值)
-roaming = os.getenv("APPDATA")
 
 
 class TermineInfo:
@@ -14,10 +9,12 @@ class SysInfo:
     system: str = sys.platform
 
 class PathInfo:
-    minecraft: str = os.path.join(
-        os.path.expanduser("~"),
-        ".minecraft"
-    ) if SysInfo.system == "linux" else os.path.join(
-        os.getenv("APPDATA"), # type: ignore
-        ".minecraft"
-    )
+    # minecraft: str = os.path.join(
+    #     os.path.expanduser("~"),
+    #     ".minecraft"
+    # ) if SysInfo.system == "linux" else os.path.join(
+    #     os.getenv("APPDATA"), # type: ignore
+    #     ".minecraft"
+    # )
+    minecraft: str = "/home/xuan-rs/codes/Termine/.minecraft" # debug
+    # minecraft: str = os.path.join(os.environ['USERPROFILE'], 'Desktop') # debug

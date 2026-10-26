@@ -1,55 +1,58 @@
-import socket
+from concurrent.futures import ThreadPoolExecutor
+from curl_cffi import requests
+import urllib.request
 import requests
 
-def network_available(host="8.8.8.8", port=53, timeout=2.0) -> bool:
-    try:
-        socket.create_connection((host, port), timeout=timeout)
-        return True
-    except OSError:
-        return False
+def download_file(url: str, save_file: str) -> None:
+    urllib.request.urlretrieve(url, save_file)
 
-def jsonUrl_fetch(url: str) -> dict:
-    if not network_available():
-        return {}
-    data: dict = requests.get(url).json()
-    return data
+def json_fetch(url: str) -> dict:
+    response = requests.get(url, impersonate="chrome101")
+    return response.json()
 
-import requests
-import os
-from pathlib import Path
+def download_file_multi(url, path, threads=8, chunk_size=256*1024):
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept-Encoding": "identity",
+    }
 
-def download_file(url: str, save_path: str) -> bool:
-    """
-    Download a file from a given URL to a specific local path.
-    Supports streaming to handle large files efficiently.
-    
-    :param url: The URL to download from.
-    :param save_path: The local path to save the file (including filename).
-    :return: True if successful, False otherwise.
-    """
-    try:
-        # 1. Ensure the parent directory exists
-        path = Path(save_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        
-        # 2. Start the download stream
-        # stream=True prevents loading the whole file into memory
-        with requests.get(url, stream=True, timeout=15) as response:
-            response.raise_for_status() # Raise an exception for bad status codes (404, 500, etc.)
-            
-            # 3. Write chunks to disk
-            with open(path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-                        
-        return True
-        
-    except requests.exceptions.RequestException as e:
-        # Handle network errors
-        print(f"Network error during download: {e}")
-        return False
-    except OSError as e:
-        # Handle file system errors (e.g., permission denied, disk full)
-        print(f"File system error: {e}")
-        return False
+    r = requests.get(url, headers={**headers, "Range": "bytes=0-0"},
+                     stream=True, allow_redirects=True)
+    total = None
+    supports_range = False
+    if r.status_code == 206:
+        cr = r.headers.get("Content-Range", "")
+        if "/" in cr:
+            total = int(cr.split("/")[-1])
+            supports_range = total > 0
+    r.close()
+
+    if not supports_range:
+        with requests.get(url, headers=headers, stream=True,
+                          allow_redirects=True) as r, open(path, "wb") as f:
+            for c in r.iter_content(chunk_size):
+                f.write(c)
+        return path
+
+    threads = max(1, min(threads, total))
+    bs = total // threads
+    blocks = [(i * bs, total - 1 if i == threads - 1 else (i + 1) * bs - 1)
+              for i in range(threads)]
+
+    with open(path, "wb") as f:
+        f.truncate(total)
+
+    def _work(start, end):
+        h = {**headers, "Range": f"bytes={start}-{end}"}
+        with requests.get(url, headers=h, stream=True,
+                          allow_redirects=True) as r, open(path, "r+b") as f:
+            f.seek(start)
+            for c in r.iter_content(chunk_size):
+                if c:
+                    f.write(c)
+
+    with ThreadPoolExecutor(max_workers=threads) as ex:
+        for fu in [ex.submit(_work, s, e) for s, e in blocks]:
+            fu.result()
+
+    return path

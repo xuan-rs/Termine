@@ -2,6 +2,7 @@ from colorama import (Style, init)
 from typing import Literal
 from wcwidth import wcwidth
 import re
+import shutil
 
 
 class Colors:
@@ -146,14 +147,19 @@ class Render:
         self.height = height
         self.content: list[list[str]] = [[" " for _ in range(width)] for _ in range(height)]
 
-        # Cursor position (initially at top-left)
-        self.cursor_x: int = 0
-        self.cursor_y: int = 0
+        self.tm_width = shutil.get_terminal_size().columns
+        self.tm_height = shutil.get_terminal_size().lines
+
+    def _check(self) -> None:
+        if self.width > self.tm_width:
+            for y in range(self.height):
+                self.content[y] = self.content[y][:self.tm_width]
+            self.width = self.tm_width
 
     def quad(self, 
              line: Literal["light", "heavy", "double", "rounded"], 
-             start_x: int = 0,  # <--- 新增：起始列
-             start_y: int = 0,  # <--- 新增：起始行
+             start_x: int = 0,  # <--- 起始列
+             start_y: int = 0,  # <--- 起始行
              width: int|None = None, 
              height: int|None = None
              ) -> None:
@@ -309,6 +315,7 @@ class Render:
                 self._merge_mask(x1, y, mask)
 
     def render(self) -> str:
+        self._check()
         return "\n".join(["".join(row) for row in self.content])
 
 # if __name__ == "__main__": # debug

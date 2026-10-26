@@ -28,6 +28,9 @@ def usage(content: str) -> None:
 def info(content: str) -> None:
     print(f"[{Colors.CYAN_BRIGHT}{Colors.BOLD}Info{Colors.RESET}] {content}")
 
+def please(content: str) -> None:
+    print(f"[{Colors.CYAN_BRIGHT}{Colors.BOLD}Please{Colors.RESET}] {content}")
+
 def gradient(text: str, start_rgb: tuple = (0, 240, 240), end_rgb: tuple = (180, 0, 255)) -> str|None:
     """Prints text with an RGB gradient color effect in the terminal."""
     if not text:
@@ -317,16 +320,3 @@ class Render:
     def render(self) -> str:
         self._check()
         return "\n".join(["".join(row) for row in self.content])
-
-# if __name__ == "__main__": # debug
-#     screen = Render()
-#     screen.quad(line="rounded")
-#     screen.quad(line="heavy",start_x=2, start_y=1, width=5, height=3)
-#     screen.text("浇洒嗲世界大都市建设宽带端口速度较快的就是看得见啊是肯德基阿谁看到asd阿谁",
-#         start_x=8,
-#         start_y=1,
-#         width=30,
-#         height=3
-#     )
-
-#     print(screen.render())

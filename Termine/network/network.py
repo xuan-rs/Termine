@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from curl_cffi import requests
 import urllib.request
-import requests
 
 def download_file(url: str, save_file: str) -> None:
     urllib.request.urlretrieve(url, save_file)
@@ -27,11 +26,14 @@ def download_file_multi(url, path, threads=8, chunk_size=256*1024):
             supports_range = total > 0
     r.close()
 
-    if not supports_range:
-        with requests.get(url, headers=headers, stream=True,
-                          allow_redirects=True) as r, open(path, "wb") as f:
-            for c in r.iter_content(chunk_size):
-                f.write(c)
+    if not supports_range or total is None:
+        r = requests.get(url, headers=headers, stream=True, allow_redirects=True)
+        try:
+            with open(path, "wb") as f:
+                for c in r.iter_content(chunk_size):
+                    f.write(c)
+        finally:
+            r.close()
         return path
 
     threads = max(1, min(threads, total))
@@ -44,12 +46,15 @@ def download_file_multi(url, path, threads=8, chunk_size=256*1024):
 
     def _work(start, end):
         h = {**headers, "Range": f"bytes={start}-{end}"}
-        with requests.get(url, headers=h, stream=True,
-                          allow_redirects=True) as r, open(path, "r+b") as f:
-            f.seek(start)
-            for c in r.iter_content(chunk_size):
-                if c:
-                    f.write(c)
+        r = requests.get(url, headers=h, stream=True, allow_redirects=True)
+        try:
+            with open(path, "r+b") as f:
+                f.seek(start)
+                for c in r.iter_content(chunk_size):
+                    if c:
+                        f.write(c)
+        finally:
+            r.close()
 
     with ThreadPoolExecutor(max_workers=threads) as ex:
         for fu in [ex.submit(_work, s, e) for s, e in blocks]:

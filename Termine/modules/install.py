@@ -1,6 +1,5 @@
-from network import network
 from TermineTui import terminetui
-from minecraft import version_install
+from core.minecraft import version_install
 import mojangApi
 
 def module_versions(args: list[str]) -> None:

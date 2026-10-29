@@ -6,7 +6,6 @@ import env
 import os
 import time
 import zipfile
-import platform
 
 mcdir: str = env.PathInfo.minecraft_dir
 

@@ -23,5 +23,11 @@ def process_args(args: list[str]) -> None:
     elif arg in ["-c","--config","config"]:
         from modules import config
         config.module(args[1:])
+    elif arg in ["-c!","--config!","config!"]:
+        from modules import config
+        config.module(args[1:],True)
+    elif arg in ["-g","--game","game"]:
+        from modules import game
+        game.module(args[1:])
     else:
         terminetui.usage("termine -h/--help")

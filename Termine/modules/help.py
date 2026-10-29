@@ -11,7 +11,7 @@ version = terminetui.gradient(text=version)
 def _get_screen() -> str:
     # 1. Layout Configuration (No more magic numbers!)
     SCREEN_WIDTH = 81
-    SCREEN_HEIGHT = 21
+    SCREEN_HEIGHT = 23
     
     # Outer Box Padding
     PADDING_X = 2
@@ -21,14 +21,14 @@ def _get_screen() -> str:
     TABLE_CL_START_Y = 4
 
     TABLE_CL_WIDTH = 78
-    TABLE_CL_HEIGHT = 7
+    TABLE_CL_HEIGHT = 8
 
 
     TABLE_CU_START_X = 2
     TABLE_CU_START_Y = 13
 
     TABLE_CU_WIDTH = 78
-    TABLE_CU_HEIGHT = 7
+    TABLE_CU_HEIGHT = 9
     
     # Column X Coordinates (Start points for text and lines)
     # Calculated based on the inner table start_x
@@ -49,11 +49,12 @@ def _get_screen() -> str:
     # 2. Command Data Structure
     # Format: (Short Flag, Long Flag, Module Name, Description)
     COMMANDS_LIST_DATA = [
-        ("-h",  "--help",             "help",             "* command list | help"),
-        ("-iv", "--install-versions", "install-versions", "* install versions"),
-        ("-v",  "--version",          "version",          "* termine version"),
-        ("-s",  "--search",           "search",           "* search versions"),
-        ("-c",  "--config",           "config",           "* manage termine config")
+        ("-h",  "--help",             "help",             "* Command list | help"),
+        ("-iv", "--install-versions", "install-versions", "* Install versions"),
+        ("-v",  "--version",          "version",          "* Termine version"),
+        ("-s",  "--search",           "search",           "* Search versions"),
+        ("-c",  "--config",           "config",           "* Manage termine config"),
+        ("-g",  "--game",             "game",             "* Start a game"),
     ]
 
 
@@ -110,7 +111,9 @@ def _get_screen() -> str:
         ("-s <Version Name>"),
         ("-c [--mcdir/mcdir|--java-path/javapath] <Path>"),
         ("   (termine -c -c/check/--check = Check, not set)"),
-        ("   (if you want to check, do not write the path)")
+        ("   (if you want to check, do not write the path)"),
+        ("-g <Version Folder Path>"),
+        ("   (/path/to/1.##.#)")
     ]
 
     for i, (cm) in enumerate(COMMANDS_USAGE_DATA):

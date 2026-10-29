@@ -11,30 +11,6 @@ import platform
 mcdir: str = env.PathInfo.minecraft_dir
 
 
-def _rule_matches(rule: dict, system: str) -> bool:
-    os_rule = rule.get("os")
-    if os_rule:
-        name = os_rule.get("name")
-        if name and name != system:
-            return False
-        arch = os_rule.get("arch")
-        if arch:
-            machine = platform.machine().lower()
-            if machine in ("amd64", "x64"):
-                machine = "x86_64"
-            elif machine in ("i386", "i686"):
-                machine = "x86"
-            elif machine in ("aarch64", "arm64"):
-                machine = "arm64"
-            if arch == "aarch_64":
-                arch = "arm64"
-            if machine != arch:
-                return False
-    features = rule.get("features")
-    if features and any(features.values()):
-        return False
-    return True
-
 # def _library_allowed(lib: dict, system: str) -> bool:
 #     rules = lib.get("rules")
 #     if not rules:

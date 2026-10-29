@@ -18,7 +18,7 @@ class Config:
     def __init__(self) -> None:
         self.config_file = os.path.join(PATH, "config.json")
 
-        os.makedirs(PATH, exist_ok=True)
+        # os.makedirs(PATH, exist_ok=True)
 
     # def language(self, lang: Literal["en_US"])
 
@@ -52,7 +52,7 @@ class Config:
         toolkit.write_json(self.config_file, file_content)
 
         try:
-            os.makedirs(path, exist_ok=True)
+            os.path.exists(path)
         except PermissionError:
             terminetui.faild("No permission to access")
             terminetui.please("sudo/administrator is required, proceed with caution")
@@ -79,5 +79,5 @@ class Config:
 
         # NOTE: original code forgot to persist the change; added below
         toolkit.write_json(self.config_file, file_content)
-        os.makedirs(path, exist_ok=True)
+        # os.makedirs(path, exist_ok=True)
         return

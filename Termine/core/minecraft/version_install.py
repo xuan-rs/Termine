@@ -131,7 +131,7 @@ def install(version: dict[str, str]) -> None:
     version_info = network.json_fetch(version_url)
 
 
-    assets_index_path = _index_jsonfile(version_name, version_info)
+    assets_index_path = _index_jsonfile(version_info["assetIndex"]["id"], version_info)
     _resource_files(assets_index_path)
     _libraries(version_info["libraries"], version_name)
     _client_jar(version_name, version_info)

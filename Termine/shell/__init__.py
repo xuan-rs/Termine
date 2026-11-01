@@ -7,16 +7,16 @@ def version():
     return import_module(".version", __package__).module()
 
 def install(args: list[str]):
-    return import_module(".install", __package__).module_versions(args)
+    return import_module(".install", __package__).module_versions(args[1:])
 
 def search(args: list[str]):
-    return import_module(".search", __package__).module(args)
+    return import_module(".search", __package__).module(args[1:])
 
 def config(args: list[str], force: bool = False):
     return import_module(".config", __package__).module(args[1:], force)
 
 def game(args: list[str]):
-    return import_module(".game", __package__).module(args)
+    return import_module(".game", __package__).module(args[1:])
 
 def default() -> None:
     from TermineTui import terminetui

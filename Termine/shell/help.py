@@ -11,7 +11,7 @@ version = terminetui.gradient(text=version)
 def _get_screen() -> str:
     # 1. Layout Configuration (No more magic numbers!)
     SCREEN_WIDTH = 81
-    SCREEN_HEIGHT = 23
+    SCREEN_HEIGHT = 25
     
     # Outer Box Padding
     PADDING_X = 2
@@ -21,11 +21,11 @@ def _get_screen() -> str:
     TABLE_CL_START_Y = 4
 
     TABLE_CL_WIDTH = 78
-    TABLE_CL_HEIGHT = 8
+    TABLE_CL_HEIGHT = 10
 
 
     TABLE_CU_START_X = 2
-    TABLE_CU_START_Y = 13
+    TABLE_CU_START_Y = 15
 
     TABLE_CU_WIDTH = 78
     TABLE_CU_HEIGHT = 9
@@ -54,7 +54,9 @@ def _get_screen() -> str:
         ("-v",  "--version",          "version",          "* Termine version"),
         ("-s",  "--search",           "search",           "* Search versions"),
         ("-c",  "--config",           "config",           "* Manage termine config"),
+        ("-c!", "--config!",          "config!",          "* Force config"),
         ("-g",  "--game",             "game",             "* Start a game"),
+        ("-m",  "--mod",              "mod",              "* Manage mods"),
     ]
 
 
@@ -91,9 +93,9 @@ def _get_screen() -> str:
 
 
     # 4. draw Commands Usage
-    ROW_START_Y = 14
+    ROW_START_Y = 16
 
-    screen.text(f"{CYAN}{BOLD}Commands Usage{RESET}", PADDING_X, 12)
+    screen.text(f"{CYAN}{BOLD}Commands Usage{RESET}", PADDING_X, 14)
 
     screen.quad(
         line="heavy",

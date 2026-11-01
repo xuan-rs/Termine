@@ -18,6 +18,9 @@ def config(args: list[str], force: bool = False):
 def game(args: list[str]):
     return import_module(".game", __package__).module(args[1:])
 
+def mod(args: list[str]):
+    return import_module(".mod", __package__).module(args[1:])
+
 def default() -> None:
     from TermineTui import terminetui
     terminetui.usage("termine -h/--help/help")

@@ -7,9 +7,10 @@ _COMMAND_MAP = [
     (shell.search,                          ("-s",  "--search",           "search")),
     (shell.config,                          ("-c",  "--config",           "config")),
     (shell.game,                            ("-g",  "--game",             "game")),
+    (shell.mod,                             ("-m",  "--mod",              "mod")),
     (lambda _: shell.help(),                ("-h",  "--help",             "help")),
     (lambda _: shell.version(),             ("-v",  "--version",          "version")),
-    (lambda args: shell.config(args, True), ("-cf", "--config-force",     "config-force")),
+    (lambda args: shell.config(args, True), ("-c!", "--config!",          "config!")),
 ]
 
 

@@ -21,3 +21,4 @@ Completely written in Python, may integrate Rust in the future, and package usin
 - Create the startup game section
 - Improve the download **mods** section
 - Add multilingual support (This could take a century)
+- Add dynamic TUI page

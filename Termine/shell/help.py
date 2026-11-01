@@ -11,7 +11,7 @@ version = terminetui.gradient(text=version)
 def _get_screen() -> str:
     # 1. Layout Configuration (No more magic numbers!)
     SCREEN_WIDTH = 81
-    SCREEN_HEIGHT = 25
+    SCREEN_HEIGHT = 26
     
     # Outer Box Padding
     PADDING_X = 2
@@ -28,7 +28,7 @@ def _get_screen() -> str:
     TABLE_CU_START_Y = 15
 
     TABLE_CU_WIDTH = 78
-    TABLE_CU_HEIGHT = 9
+    TABLE_CU_HEIGHT = 10
     
     # Column X Coordinates (Start points for text and lines)
     # Calculated based on the inner table start_x
@@ -115,7 +115,8 @@ def _get_screen() -> str:
         ("   (termine -c -c/check/--check = Check, not set)"),
         ("   (if you want to check, do not write the path)"),
         ("-g <Version Folder Path>"),
-        ("   (/path/to/1.##.#)")
+        ("   (/path/to/1.##.#)"),
+        ("-m <install|uninstall|list|search> <Mod Name/Version>"),
     ]
 
     for i, (cm) in enumerate(COMMANDS_USAGE_DATA):

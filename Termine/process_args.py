@@ -19,8 +19,10 @@ def process_args(args: list[str]) -> None:
         shell.default()
         return
 
+    main_cmd = args[0]
+
     for command, flags in _COMMAND_MAP:
-        if any(flag in args for flag in flags):
+        if main_cmd in flags:
             command(args)
             return
 

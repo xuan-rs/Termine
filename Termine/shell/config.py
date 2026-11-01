@@ -5,7 +5,6 @@ from pathlib import Path
 import env
 import subprocess
 import os
-import sys
 import shutil
 
 def _complete_path(path: str) -> str:
@@ -60,4 +59,5 @@ def module(args, mandatory: bool = False) -> None:
     elif type == "javapath":
         if not _java_test(args[0]) and not mandatory:
             terminetui.faild("Java version not available, '-c!' mandatory configuration")
+            return
         config_manager.Config().java_path(args[0])

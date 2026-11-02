@@ -1,6 +1,9 @@
 .venv/
 __pycache__/
 .vscode/
-debug.py
 .minecraft*/
+logs/
+
+debug.py
 auto-reload.sh
+start*.sh

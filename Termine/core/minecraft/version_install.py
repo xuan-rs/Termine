@@ -63,7 +63,7 @@ def _resource_files(assets_index_path: str) -> None:
         else:
             small_tasks.append((url, save_path))
 
-    failures = network.download_files_batch(small_tasks, workers=32, show_info="Downloading ")
+    failures = network.download_files_batch(small_tasks, workers=64, show_info="Downloading ")
     for url, save_path in large_tasks:
         try:
             network.download_file_multi(url, save_path, threads=4)

@@ -29,3 +29,4 @@ class SysInfo:
 class PathInfo:
     config_path: str = _configpath()
     minecraft_dir: str = _minecraftpath()
+    java_path: str = config_manager.Config().java_path(None) # type: ignore

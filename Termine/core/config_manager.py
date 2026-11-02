@@ -3,14 +3,18 @@ from TermineTui import terminetui
 from pathlib import Path
 import sys
 import os
+import json
 
 def _config_path() -> str:
     """Resolve Termine's config directory.\n
     (moved here from env.py so config_manager no longer depends on env)
     """
-    if sys.platform.startswith("linux"):
+    if sys.platform == "linux":
         return os.path.join(os.path.expanduser("~"), ".config", "termine")
-    return os.path.join(os.getenv("APPDATA"), "termine")  # type: ignore[arg-type]
+    elif sys.platform == "darwin":
+        return os.path.join(os.path.expanduser("~"), "Library", "Application Support", "termine")
+    else:
+        return os.path.join(os.getenv("APPDATA"), "termine")  # type: ignore[arg-type]
 
 PATH: str = _config_path()
 
@@ -39,6 +43,10 @@ class Config:
         """
         if not path:
             # .get() so a fresh install (empty config) does not raise KeyError
+            try:
+                return self._read_config().get("minecraft_dir")
+            except json.decoder.JSONDecodeError:
+                toolkit.repair_json_file(self.config_file)
             return self._read_config().get("minecraft_dir")
 
         path = self._complete_path(path)

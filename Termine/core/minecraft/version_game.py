@@ -10,7 +10,9 @@ def game(path: str) -> None:
     version_dir = Path(path).expanduser().resolve()
     version_name = version_dir.name
     version_info = toolkit.read_json(str(version_dir / f"{version_name}.json"))
-    minecraft_dir = Path(env.PathInfo.minecraft_dir)
+    minecraft_dir = Path(os.path.dirname(path))
+
+    # minecraft_dir = Path(env.PathInfo.minecraft_dir)
 
     libraries_dir = minecraft_dir / "libraries"
     libraries = sorted(

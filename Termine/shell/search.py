@@ -8,7 +8,7 @@ RESET = terminetui.Colors.RESET
 
 def module(args: list[str]) -> None:
     if not args or not args[0].strip():
-        terminetui.usage("termine -s <Version_Name>")
+        terminetui.usage(f"termine -s <{RED}{BOLD}Version Name{RESET}>")
         return
 
     keyword = args[0].strip().lower()

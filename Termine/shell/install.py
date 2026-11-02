@@ -1,11 +1,12 @@
 from TermineTui import terminetui
+from TermineTui.terminetui import Colors
 from core.minecraft import version_install
 import mojangApi
 
 def module_versions(args: list[str]) -> None:
     """Retrieve the list of downloadable versions"""
     if not args:
-        terminetui.usage("termine -iv <Version_Name>")
+        terminetui.usage(f"termine -iv <{Colors.RED}{Colors.BOLD}Version_Name{Colors.RESET}>")
         return
 
     versions = mojangApi.versions()

@@ -1,4 +1,5 @@
 from TermineTui import terminetui
+from TermineTui.terminetui import Colors
 import shell
 
 
@@ -26,4 +27,4 @@ def process_args(args: list[str]) -> None:
             command(args)
             return
 
-    terminetui.usage("termine -h/--help/help")
+    terminetui.usage(f"termine <{Colors.RED}{Colors.BOLD}-h|--help|help{Colors.RESET}>")

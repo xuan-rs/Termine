@@ -1,6 +1,7 @@
 from typing import Literal
 from core import config_manager
 from TermineTui import terminetui
+from TermineTui.terminetui import Colors
 from pathlib import Path
 import env
 import subprocess
@@ -29,7 +30,7 @@ def _java_test(path: str) -> bool:
 
 def module(args, mandatory: bool = False) -> None:
     if not args: # termine -c >s<
-        terminetui.usage("termine -c mcdir|javapath|-c/--check/check")
+        terminetui.usage(f"termine -c <{Colors.RED}{Colors.BOLD}mcdir|javapath|-c/--check/check{Colors.RESET}>")
         return
 
     name = args[0] # termine -c >mcdir<
@@ -40,15 +41,16 @@ def module(args, mandatory: bool = False) -> None:
     elif name in ["--java-path", "javapath"]: # termine -c javapath
         type = "javapath"
     else: # termine -c ?
-        terminetui.usage("termine -c mcdir|javapath|-c/--check/check"); return
+        terminetui.usage(f"termine -c <{Colors.RED}{Colors.BOLD}mcdir|javapath|-c/--check/check{Colors.RESET}>")
+        return
 
     args = args[1:] # termine -c mcdir ><
 
     if not args:
         if type == "mcdir": # termine -c mcdir
-            terminetui.usage("termine -c mcdir <Path>"); return
+            terminetui.usage(f"termine -c mcdir <{Colors.RED}{Colors.BOLD}Path{Colors.RESET}>"); return
         elif type == "javapath": # termine -c javapath
-            terminetui.usage("termine -c javapath <Path>"); return
+            terminetui.usage(f"termine -c javapath <{Colors.RED}{Colors.BOLD}Path{Colors.RESET}>"); return
 
     if not os.path.exists(_complete_path(args[0])) and not mandatory:
         terminetui.faild("Path not exists.")

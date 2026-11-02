@@ -14,7 +14,7 @@ A fully CLI oriented Minecraft launcher
 
 ## Technical section
 
-Completely written in Python, may integrate Rust in the future, and package using the "Nuitka" tool
+Completely written in Python, and package using the "Nuitka" tool, may integrate Rust in the future
 
 ## Future plans
 

@@ -27,6 +27,12 @@ def repair_json_file(path: str) -> None:
         f.write(fixed)
     os.replace(path, path)
 
+def java_major(version_str: str) -> str:
+    parts = version_str.split(".")
+    if parts[0] == "1" and len(parts) > 1:
+        return parts[1]   # "1.8.0_512" -> "8"
+    return parts[0]       # "17.0.8" -> "17"
+
 def java_version(java_path: str|None) -> dict[str,str]:
     """get java version and path"""
     try:
@@ -59,7 +65,7 @@ def java_version(java_path: str|None) -> dict[str,str]:
         java_path = shutil.which('java')
         
         return {
-            'version': str(version_str),
+            'version': java_major(str(version_str)),
             'path': str(java_path),
         }
     except FileNotFoundError:

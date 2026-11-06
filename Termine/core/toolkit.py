@@ -27,37 +27,40 @@ def repair_json_file(path: str) -> None:
         f.write(fixed)
     os.replace(path, path)
 
-def java_version(java_path: str|None):
+def java_version(java_path: str|None) -> dict[str,str]:
     """get java version and path"""
-    if not java_path:
-        java = "java"
-    else:
-        java = java_path
+    try:
+        if not java_path:
+            java = "java"
+        else:
+            java = java_path
 
-    result = subprocess.run(
-        [java, '-version'],
-        capture_output=True,
-        text=True,
-        check=False
-    )
-    output = result.stderr.strip()
-    
-    version_match = re.search(r'version "([^"]+)"', output)
-    if not version_match:
-        version_match = re.search(r'version (\S+)', output)
-    
-    version_str = version_match.group(1) if version_match else None
-    
-    java_path = None
-    for line in output.splitlines():
-        if ' version ' in line or 'Runtime Environment' in line:
-            continue
-        if java in line.lower():
-            pass
+        result = subprocess.run(
+            [java, '-version'],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        output = result.stderr.strip()
         
-    java_path = shutil.which('java')
-    
-    return {
-        'version': version_str,
-        'path': java_path,
-    }
+        version_match = re.search(r'version "([^"]+)"', output)
+        if not version_match:
+            version_match = re.search(r'version (\S+)', output)
+        
+        version_str = version_match.group(1) if version_match else None
+        
+        java_path = None
+        for line in output.splitlines():
+            if ' version ' in line or 'Runtime Environment' in line:
+                continue
+            if java in line.lower():
+                pass
+            
+        java_path = shutil.which('java')
+        
+        return {
+            'version': str(version_str),
+            'path': str(java_path),
+        }
+    except FileNotFoundError:
+        return {}

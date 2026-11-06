@@ -1,6 +1,9 @@
 import json
 import os
 import json_repair
+import shutil
+import subprocess
+import re
 
 def write_json(path:str, content:dict, indent:int = 4) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -23,3 +26,38 @@ def repair_json_file(path: str) -> None:
     with open(path, 'w', encoding='utf-8') as f:
         f.write(fixed)
     os.replace(path, path)
+
+def java_version(java_path: str|None):
+    """get java version and path"""
+    if not java_path:
+        java = "java"
+    else:
+        java = java_path
+
+    result = subprocess.run(
+        [java, '-version'],
+        capture_output=True,
+        text=True,
+        check=False
+    )
+    output = result.stderr.strip()
+    
+    version_match = re.search(r'version "([^"]+)"', output)
+    if not version_match:
+        version_match = re.search(r'version (\S+)', output)
+    
+    version_str = version_match.group(1) if version_match else None
+    
+    java_path = None
+    for line in output.splitlines():
+        if ' version ' in line or 'Runtime Environment' in line:
+            continue
+        if java in line.lower():
+            pass
+        
+    java_path = shutil.which('java')
+    
+    return {
+        'version': version_str,
+        'path': java_path,
+    }

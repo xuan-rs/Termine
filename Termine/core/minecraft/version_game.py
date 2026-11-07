@@ -1,12 +1,26 @@
 from pathlib import Path
-import os
-import subprocess
-
-import env
 from TermineTui import terminetui
 from .. import toolkit
+from string import Template
+import subprocess
+import os
+import env
+import json
+
+def parse_arguments_legacy(arguments: dict) -> list[str]:
+    Template(s).substitute(auth_player_name="Steve", auth_session="abc123")
+
+d = {"b": "hello", "a": "${b}"}
+d["a"] = Template(d["a"]).substitute(d)
+print(d)   # {'b': 'hello', 'a': 'hello'}
+
+def parse_arguments_modern(arguments: dict) -> tuple[list[str], list[str]]:
+    pass
 
 def game(path: str) -> None:
+    """start the game with the specified version"""
+    terminetui.info(f"Parse version...")
+
     version_dir = Path(path).expanduser().resolve()
     version_name = version_dir.name
     version_info = toolkit.read_json(str(version_dir / f"{version_name}.json"))
@@ -14,41 +28,38 @@ def game(path: str) -> None:
 
     # minecraft_dir = Path(env.PathInfo.minecraft_dir)
 
-    libraries_dir = minecraft_dir / "libraries"
-    libraries = sorted(
-        str(library)
-        for library in libraries_dir.rglob("*.jar")
-        if "-natives-" not in library.name
-    )
     client_jar = version_dir / f"{version_name}.jar"
-    classpath = os.pathsep.join([*libraries, str(client_jar)])
 
-    start_command: list[str] = [
-        env.PathInfo.java_path,
-        "-Xmx4G",
-        f"-Djava.library.path={version_dir / 'natives'}",
-        "-cp",
-        classpath,
-        version_info["mainClass"],
-        "--username",
-        "Steve",
-        "--version",
-        version_name,
-        "--gameDir",
-        str(minecraft_dir),
-        "--assetsDir",
-        str(minecraft_dir / "assets"),
-        "--assetIndex",
-        version_info["assetIndex"]["id"],
-        "--uuid",
-        "00000000000000000000000000000000",
-        "--accessToken",
-        "0",
-        "--userType",
-        "legacy",
-        "--versionType",
-        "release",
-    ]
+    start_command: list[str] = []
+
+    mainClass = version_info["mainClass"]
+    need_javaVersion = str(version_info["javaVersion"]["majorVersion"])
+
+    java_path = env.PathInfo.java_path
+    java_version = toolkit.java_version(java_path)["version"].split(".")[0]
+
+    try:
+        if java_version != need_javaVersion or toolkit.java_version(java_path)["version"] == {}:
+            terminetui.faild(f"Please use Java {need_javaVersion}")
+            return
+    except PermissionError:
+        terminetui.faild(f"Permission denied to access Java at {java_version}. Please check your permissions.")
+        return
+    except OSError:
+        terminetui.faild(f"The Java version cannot be executed. Please verify if the version is available and executable.")
+        return
+
+    if need_javaVersion != java_version: # java version detection
+        terminetui.faild(f"Please use Java {need_javaVersion} for gaming.")
+        return
+
+    if "arguments" in version_info:
+        jvm_args: list[str]
+        game_args: list[str]
+        jvm_args, game_args = parse_arguments_modern(version_info["arguments"])
+    else:
+        args = parse_arguments_legacy(version_info["minecraftArguments"])
 
     terminetui.info(f"Starting Minecraft {version_name}...")
-    subprocess.run(start_command, check=True)
+
+    # subprocess.run(start_command, check=True)
